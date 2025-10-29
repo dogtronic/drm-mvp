@@ -12,9 +12,23 @@ Strona dostępna online: [GitHub Pages]()
 
 ## 📁 Struktura
 
-- `index.html` - Strona logowania (główna)
-- `dashboard.html` - Panel główny po zalogowaniu
-- `login.html` - Alternatywna strona logowania
+```
+dogtronic-retail-media-mvp/
+├── index.html                  # Strona logowania (główna)
+├── pages/                      # Podstrony aplikacji
+│   ├── dashboard.html         # Panel główny po zalogowaniu
+│   ├── campaigns.html         # Lista kampanii
+│   ├── new-campaign.html      # Tworzenie nowej kampanii
+│   ├── reports.html           # Raporty i analityka
+│   ├── billing.html          # Rozliczenia i płatności
+│   └── settings.html         # Ustawienia konta
+├── components/                 # Komponenty wielokrotnego użytku
+│   ├── sidebar.html          # Boczne menu nawigacyjne
+│   └── topbar.html           # Górny pasek nawigacyjny
+└── js/                        # Skrypty JavaScript
+    ├── loadComponents.js     # Ładowanie komponentów
+    └── tableSort.js          # Sortowanie tabel
+```
 
 ## 🎨 Design
 
@@ -25,27 +39,55 @@ Strona dostępna online: [GitHub Pages]()
 
 ## ⚙️ Funkcje
 
-### Strona logowania
+### Strona logowania (`index.html`)
 
 - Formularz logowania (email + hasło)
 - Reset hasła
 - Dla klientów biznesowych (bez rejestracji publicznej)
 
-### Dashboard
+### Dashboard (`pages/dashboard.html`)
 
 - **Przegląd** - Statystyki kampanii (wyświetlenia, lokalizacje, budżet)
-- **Moje kampanie** - Lista aktywnych i zakończonych kampanii
-- **Nowa kampania** - Formularz tworzenia kampanii
-- **Raporty** - Statystyki i analizy
-- **Rozliczenia** - Historia płatności
-- **Ustawienia** - Zarządzanie kontem
+- Możliwość tworzenia nowej kampanii
+- Szybki dostęp do wszystkich sekcji
+
+### Kampanie (`pages/campaigns.html`)
+
+- **Lista kampanii** - Podgląd wszystkich aktywnych i zakończonych kampanii
+- Sortowanie i filtrowanie kampanii
+- Szczegóły każdej kampanii
+
+### Nowa kampania (`pages/new-campaign.html`)
+
+- **Formularz** - Tworzenie nowej kampanii reklamowej
+- Wybór lokalizacji (sieci handlowe)
+- Ustawienia budżetu i czasu trwania
+
+### Raporty (`pages/reports.html`)
+
+- **Statystyki i analizy** - Szczegółowe raporty z kampanii
+- Wykresy i wizualizacje danych
+- Eksport danych
+
+### Rozliczenia (`pages/billing.html`)
+
+- **Historia płatności** - Wszystkie transakcje
+- Faktury i rozliczenia
+- Płatności i metody płatności
+
+### Ustawienia (`pages/settings.html`)
+
+- **Zarządzanie kontem** - Edycja profilu
+- Ustawienia notyfikacji
+- Bezpieczeństwo konta
 
 ## 🛠️ Technologie
 
-- HTML5
-- Tailwind CSS (CDN)
-- JavaScript (Vanilla)
-- GitHub Pages
+- **HTML5** - Struktura strony
+- **Tailwind CSS** (CDN) - Framework CSS do stylizacji
+- **JavaScript** (Vanilla) - Logika aplikacji
+- **Architektura komponentowa** - Ponownie używane komponenty (sidebar, topbar)
+- **GitHub Pages** - Hosting
 
 ## 📦 Instalacja
 

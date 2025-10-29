@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Moje kampanie</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../js/loadComponents.js"></script>
+    <script src="../js/tableSort.js"></script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <!-- Sidebar placeholder - zostanie wczytany przez JavaScript -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="ml-64">
+      <!-- Top Bar placeholder - zostanie wczytany przez JavaScript -->
+      <div id="topbar-placeholder"></div>
+
+      <!-- Content Area -->
+      <div class="p-8">
+        <!-- Campaigns Table -->
+        <div
+          class="rounded-lg border overflow-hidden"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="p-6 border-b" style="border-color: #e5e7eb">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold" style="color: #111827">
+                  Wszystkie kampanie
+                </h2>
+                <p class="text-sm mt-1" style="color: #6b7280">
+                  Lista Twoich aktywnych i zakończonych kampanii
+                </p>
+              </div>
+              <a
+                href="new-campaign.html"
+                class="px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ease-in-out"
+                style="
+                  background-color: #eff6ff;
+                  color: #3b82f6;
+                  border: 1px solid #bfdbfe;
+                "
+                onmouseover="this.style.backgroundColor='#3b82f6'; this.style.color='#ffffff'; this.style.borderColor='#3b82f6'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px rgba(59, 130, 246, 0.3)'"
+                onmouseout="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'; this.style.borderColor='#bfdbfe'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+              >
+                Nowa kampania
+              </a>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table id="campaigns-table" class="w-full" data-sortable>
+              <thead style="background-color: #f9fafb">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Kampania
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Wyświetlenia
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Lokalizacje
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Budżet
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Akcje
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: #e5e7eb">
+                <!-- Row 1 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded flex items-center justify-center"
+                        style="background-color: #eff6ff"
+                      >
+                        <svg
+                          class="w-5 h-5 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Pepsi MAX - Zima 2025
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          01.01.2025 - 31.03.2025
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Aktywna
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">42.3k</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      +18% vs wczoraj
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">89</p>
+                    <p class="text-sm" style="color: #6b7280">Lewiatan</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">15k zł</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      Wykorzystano 68%
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out group"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.2)'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.transform='scale(1)'; this.style.boxShadow='none'"
+                        title="Edytuj"
+                      >
+                        <svg
+                          class="w-5 h-5 transition-colors duration-300"
+                          style="color: #6b7280"
+                          onmouseover="this.style.color='#3b82f6'"
+                          onmouseout="this.style.color='#6b7280'"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out group"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.2)'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.transform='scale(1)'; this.style.boxShadow='none'"
+                        title="Zobacz raport"
+                      >
+                        <svg
+                          class="w-5 h-5 transition-colors duration-300"
+                          style="color: #6b7280"
+                          onmouseover="this.style.color='#3b82f6'"
+                          onmouseout="this.style.color='#6b7280'"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded flex items-center justify-center"
+                        style="background-color: #eff6ff"
+                      >
+                        <svg
+                          class="w-5 h-5 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Pepsi Zero - Promocja
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          15.12.2024 - 15.01.2025
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Aktywna
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">38.1k</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      +12% vs wczoraj
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">67</p>
+                    <p class="text-sm" style="color: #6b7280">Lewiatan</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">12k zł</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      Wykorzystano 85%
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out group"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.2)'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.transform='scale(1)'; this.style.boxShadow='none'"
+                        title="Edytuj"
+                      >
+                        <svg
+                          class="w-5 h-5 transition-colors duration-300"
+                          style="color: #6b7280"
+                          onmouseover="this.style.color='#3b82f6'"
+                          onmouseout="this.style.color='#6b7280'"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out group"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.2)'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.transform='scale(1)'; this.style.boxShadow='none'"
+                        title="Zobacz raport"
+                      >
+                        <svg
+                          class="w-5 h-5 transition-colors duration-300"
+                          style="color: #6b7280"
+                          onmouseover="this.style.color='#3b82f6'"
+                          onmouseout="this.style.color='#6b7280'"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded flex items-center justify-center"
+                        style="background-color: #f3f4f6"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          style="color: #6b7280"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Pepsi - Świąteczna
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          01.12.2024 - 25.12.2024
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #f3f4f6; color: #6b7280"
+                    >
+                      Zakończona
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">156.8k</p>
+                    <p class="text-sm" style="color: #6b7280">Całkowite</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">124</p>
+                    <p class="text-sm" style="color: #6b7280">Lewiatan</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">18k zł</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      Wykorzystano 100%
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out group"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.2)'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.transform='scale(1)'; this.style.boxShadow='none'"
+                        title="Zobacz raport"
+                      >
+                        <svg
+                          class="w-5 h-5 transition-colors duration-300"
+                          style="color: #6b7280"
+                          onmouseover="this.style.color='#3b82f6'"
+                          onmouseout="this.style.color='#6b7280'"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Aktualizuj tytuł strony
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+          const titleElement = document.getElementById("page-title");
+          const subtitleElement = document.getElementById("page-subtitle");
+          if (titleElement) {
+            titleElement.textContent = "Moje kampanie";
+          }
+          if (subtitleElement) {
+            subtitleElement.textContent = "Zarządzaj swoimi kampaniami";
+          }
+
+          // Ustaw aktywny link w sidebarze
+          const navLinks = document.querySelectorAll(
+            "#sidebar-placeholder a[href='campaigns.html']"
+          );
+          navLinks.forEach((link) => {
+            link.style.backgroundColor = "#eff6ff";
+            link.style.color = "#3b82f6";
+          });
+        }, 100);
+      });
+    </script>
+  </body>
+</html>

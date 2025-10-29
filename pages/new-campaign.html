@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Nowa kampania</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../js/loadComponents.js"></script>
+    <style>
+      /* Styl dla wszystkich pól daty aby były spójne */
+      input[type="date"] {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      /* Styl placeholdera dla pól daty, gdy pole jest puste */
+      input[type="date"]:not(:focus):invalid::-webkit-datetime-edit,
+      input[type="date"]:not(:focus):invalid::-webkit-datetime-edit-text,
+      input[type="date"]:not(:focus):invalid::-webkit-datetime-edit-month-field,
+      input[type="date"]:not(:focus):invalid::-webkit-datetime-edit-day-field,
+      input[type="date"]:not(:focus):invalid::-webkit-datetime-edit-year-field {
+        color: #6b7280 !important; /* szary zgodny z projektem */
+        font-weight: 500 !important; /* spójnie z innymi polami */
+      }
+
+      /* Styl gdy pole ma wartość */
+      input[type="date"]::-webkit-datetime-edit,
+      input[type="date"]::-webkit-datetime-edit-text,
+      input[type="date"]::-webkit-datetime-edit-month-field,
+      input[type="date"]::-webkit-datetime-edit-day-field,
+      input[type="date"]::-webkit-datetime-edit-year-field {
+        color: #111827;
+        font-weight: 500;
+      }
+
+      /* Firefox (częściowe wsparcie) */
+      input[type="date"]::-moz-datetime-content {
+        color: #111827;
+        font-weight: 500;
+      }
+
+      input[type="date"]:not(:focus):invalid::-moz-datetime-content {
+        color: #6b7280 !important;
+        font-weight: 500 !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <!-- Sidebar placeholder - zostanie wczytany przez JavaScript -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="ml-64">
+      <!-- Top Bar placeholder - zostanie wczytany przez JavaScript -->
+      <div id="topbar-placeholder"></div>
+
+      <!-- Content Area -->
+      <div class="p-8">
+        <div
+          class="rounded-lg border"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="p-6 border-b" style="border-color: #e5e7eb">
+            <h2 class="text-lg font-bold" style="color: #111827">
+              Stwórz nową kampanię
+            </h2>
+            <p class="text-sm mt-1" style="color: #6b7280">
+              Wypełnij formularz, aby utworzyć nową kampanię reklamową
+            </p>
+          </div>
+          <div class="p-6">
+            <form class="space-y-6">
+              <div class="grid grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-sm font-medium mb-2"
+                    style="color: #374151"
+                  >
+                    Nazwa kampanii *
+                  </label>
+                  <input
+                    type="text"
+                    class="w-full px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                    style="
+                      background-color: #ffffff;
+                      border: 1px solid #d1d5db;
+                      color: #111827;
+                      font-weight: 500;
+                    "
+                    placeholder="np. Pepsi MAX - Zima 2025"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium mb-2"
+                    style="color: #374151"
+                  >
+                    Budżet (PLN) *
+                  </label>
+                  <input
+                    type="number"
+                    class="w-full px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                    style="
+                      background-color: #ffffff;
+                      border: 1px solid #d1d5db;
+                      color: #111827;
+                      font-weight: 500;
+                    "
+                    placeholder="15000"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-6">
+                <div>
+                  <label
+                    class="block text-sm font-medium mb-2"
+                    style="color: #374151"
+                  >
+                    Data rozpoczęcia *
+                  </label>
+                  <input
+                    type="date"
+                    class="w-full px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                    style="
+                      background-color: #ffffff;
+                      border: 1px solid #d1d5db;
+                      color: #111827;
+                      font-weight: 500;
+                    "
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-sm font-medium mb-2"
+                    style="color: #374151"
+                  >
+                    Data zakończenia *
+                  </label>
+                  <input
+                    type="date"
+                    class="w-full px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                    style="
+                      background-color: #ffffff;
+                      border: 1px solid #d1d5db;
+                      color: #111827;
+                      font-weight: 500;
+                    "
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium mb-2"
+                  style="color: #374151"
+                >
+                  Wybierz sieć *
+                </label>
+                <select
+                  class="w-full px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                  style="
+                    background-color: #ffffff;
+                    border: 1px solid #d1d5db;
+                    color: #111827;
+                    font-weight: 500;
+                  "
+                  required
+                >
+                  <option value="">Wybierz sieć sklepów</option>
+                  <option value="lewiatan">Lewiatan</option>
+                  <option value="abc">ABC</option>
+                  <option value="delikatesy">Delikatesy Centrum</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium mb-2"
+                  style="color: #374151"
+                >
+                  Plik wideo/grafika *
+                </label>
+                <div
+                  class="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+                  style="border-color: #d1d5db"
+                  onclick="document.getElementById('fileUpload').click()"
+                >
+                  <svg
+                    class="w-12 h-12 mx-auto mb-4"
+                    style="color: #6b7280"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
+                  </svg>
+                  <p class="font-medium mb-1" style="color: #111827">
+                    Kliknij lub przeciągnij plik
+                  </p>
+                  <p class="text-sm" style="color: #6b7280">
+                    MP4, MOV, PNG, JPG (max. 100MB)
+                  </p>
+                  <input type="file" id="fileUpload" class="hidden" />
+                </div>
+              </div>
+
+              <div class="flex gap-4 pt-4">
+                <a
+                  href="campaigns.html"
+                  class="px-6 py-3 rounded-lg font-medium transition-colors"
+                  style="
+                    background-color: #ffffff;
+                    border: 1px solid #d1d5db;
+                    color: #374151;
+                  "
+                  onmouseover="this.style.backgroundColor='#f9fafb'"
+                  onmouseout="this.style.backgroundColor='#ffffff'"
+                >
+                  Anuluj
+                </a>
+                <button
+                  type="submit"
+                  class="px-6 py-3 text-sm font-medium rounded-lg transition-all duration-300 ease-in-out"
+                  style="
+                    background-color: #eff6ff;
+                    color: #3b82f6;
+                    border: 1px solid #bfdbfe;
+                  "
+                  onmouseover="this.style.backgroundColor='#3b82f6'; this.style.color='#ffffff'; this.style.borderColor='#3b82f6'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px rgba(59, 130, 246, 0.3)'"
+                  onmouseout="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'; this.style.borderColor='#bfdbfe'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                >
+                  Stwórz kampanię
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+          const titleElement = document.getElementById("page-title");
+          const subtitleElement = document.getElementById("page-subtitle");
+          if (titleElement) titleElement.textContent = "Nowa kampania";
+          if (subtitleElement)
+            subtitleElement.textContent = "Stwórz nową kampanię reklamową";
+        }, 100);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Rozliczenia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../js/loadComponents.js"></script>
+    <script src="../js/tableSort.js"></script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <!-- Sidebar placeholder - zostanie wczytany przez JavaScript -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="ml-64">
+      <!-- Top Bar placeholder - zostanie wczytany przez JavaScript -->
+      <div id="topbar-placeholder"></div>
+
+      <!-- Content Area -->
+      <div class="p-8">
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Wszystkie płatności
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">47</p>
+          </div>
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <p class="text-sm mb-1" style="color: #6b7280">Kwota całkowita</p>
+            <p class="text-3xl font-bold" style="color: #111827">324k zł</p>
+          </div>
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <p class="text-sm mb-1" style="color: #6b7280">Ostatnia faktura</p>
+            <p class="text-lg font-bold" style="color: #111827">15.01.2025</p>
+          </div>
+        </div>
+
+        <!-- Billing Table -->
+        <div
+          class="rounded-lg border overflow-hidden"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="p-6 border-b" style="border-color: #e5e7eb">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold" style="color: #111827">
+                  Historia faktur
+                </h2>
+                <p class="text-sm mt-1" style="color: #6b7280">
+                  Lista wszystkich faktur i płatności
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table id="billing-table" class="w-full" data-sortable>
+              <thead style="background-color: #f9fafb">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Numer faktury
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Data
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Kampania
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Kwota
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Akcje
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: #e5e7eb">
+                <!-- Row 1 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      FV/2025/001
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">15.01.2025</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Pepsi MAX - Zima 2025
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">15.2k zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Opłacona
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <button
+                      class="text-primary hover:text-blue-600 font-medium text-sm"
+                    >
+                      Pobierz PDF
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      FV/2024/045
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">08.01.2025</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Pepsi Zero - Promocja
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">12.8k zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Opłacona
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <button
+                      class="text-primary hover:text-blue-600 font-medium text-sm"
+                    >
+                      Pobierz PDF
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      FV/2024/042
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">28.12.2024</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Pepsi - Świąteczna
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">18.5k zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Opłacona
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <button
+                      class="text-primary hover:text-blue-600 font-medium text-sm"
+                    >
+                      Pobierz PDF
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 4 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      FV/2024/038
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">15.12.2024</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Pepsi - Black Friday
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">22.3k zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Opłacona
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <button
+                      class="text-primary hover:text-blue-600 font-medium text-sm"
+                    >
+                      Pobierz PDF
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Row 5 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      FV/2024/035
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">28.11.2024</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Pepsi MAX - Jesień
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">14.7k zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Opłacona
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <button
+                      class="text-primary hover:text-blue-600 font-medium text-sm"
+                    >
+                      Pobierz PDF
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+          const titleElement = document.getElementById("page-title");
+          const subtitleElement = document.getElementById("page-subtitle");
+          if (titleElement) titleElement.textContent = "Rozliczenia";
+          if (subtitleElement)
+            subtitleElement.textContent = "Historia płatności i faktury";
+        }, 100);
+      });
+    </script>
+  </body>
+</html>
