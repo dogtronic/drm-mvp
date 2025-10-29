@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Rozliczenia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../../js/tableSort.js"></script>
+    <script src="../../js/loadAdminComponents.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn !== "true" || userRole !== "admin") {
+          window.location.href = "../../index.html";
+        }
+
+        setTimeout(() => {
+          document.getElementById("page-title").textContent = "Rozliczenia";
+          document.getElementById("page-subtitle").textContent =
+            "Faktury, płatności i transakcje";
+        }, 100);
+      });
+
+      function logout(e) {
+        e.preventDefault();
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.clear();
+        window.location.href = "../../index.html";
+      }
+
+      // Przełączanie widoków
+      function showView(view) {
+        const views = ["invoices", "payments", "transactions"];
+        views.forEach((v) => {
+          document.getElementById(v + "-view").classList.add("hidden");
+          document
+            .getElementById(v + "-btn")
+            .classList.remove("bg-primary", "text-white");
+          document
+            .getElementById(v + "-btn")
+            .classList.add("bg-white", "text-gray-700");
+        });
+
+        document.getElementById(view + "-view").classList.remove("hidden");
+        document
+          .getElementById(view + "-btn")
+          .classList.remove("bg-white", "text-gray-700");
+        document
+          .getElementById(view + "-btn")
+          .classList.add("bg-primary", "text-white");
+      }
+
+      function downloadInvoice(invoiceId) {
+        alert(`Pobieranie faktury ${invoiceId}...`);
+      }
+
+      function sendInvoice(invoiceId) {
+        alert(`Wysyłanie faktury ${invoiceId} na email klienta...`);
+      }
+
+      function markAsPaid(invoiceId) {
+        if (confirm(`Czy oznaczyć fakturę ${invoiceId} jako opłaconą?`)) {
+          alert("Faktura została oznaczona jako opłacona!");
+        }
+      }
+    </script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <div id="admin-sidebar-placeholder"></div>
+
+    <main class="ml-64">
+      <div id="admin-topbar-placeholder"></div>
+
+      <div class="p-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <!-- Monthly Revenue -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #eff6ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #3b82f6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #dcfce7; color: #16a34a"
+              >
+                +12%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Przychody w tym miesiącu
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">2.4M zł</p>
+          </div>
+
+          <!-- Pending Invoices -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #fef3c7"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #f59e0b"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Faktury oczekujące
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">23</p>
+            <p class="text-xs mt-2" style="color: #6b7280">Wartość: 485k zł</p>
+          </div>
+
+          <!-- Paid This Month -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #f0fdf4"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #16a34a"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Opłacone w tym miesiącu
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">1.9M zł</p>
+          </div>
+
+          <!-- Overdue -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #fee2e2"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #dc2626"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Po terminie</p>
+            <p class="text-3xl font-bold" style="color: #111827">8</p>
+            <p class="text-xs mt-2" style="color: #dc2626">Wartość: 125k zł</p>
+          </div>
+        </div>
+
+        <!-- View Selector -->
+        <div class="flex gap-3 mb-6">
+          <button
+            id="invoices-btn"
+            onclick="showView('invoices')"
+            class="px-6 py-3 rounded-lg font-medium transition-colors bg-primary hover:bg-blue-600 text-white"
+          >
+            Faktury
+          </button>
+          <button
+            id="payments-btn"
+            onclick="showView('payments')"
+            class="px-6 py-3 rounded-lg font-medium transition-colors bg-white hover:bg-gray-50 text-gray-700"
+            style="border: 1px solid #e5e7eb"
+          >
+            Płatności
+          </button>
+          <button
+            id="transactions-btn"
+            onclick="showView('transactions')"
+            class="px-6 py-3 rounded-lg font-medium transition-colors bg-white hover:bg-gray-50 text-gray-700"
+            style="border: 1px solid #e5e7eb"
+          >
+            Historia transakcji
+          </button>
+        </div>
+
+        <!-- INVOICES VIEW -->
+        <div id="invoices-view">
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <div class="flex gap-4">
+                <input
+                  type="text"
+                  placeholder="Szukaj faktury..."
+                  class="flex-1 px-4 py-2 rounded-lg text-sm"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                />
+                <select
+                  class="px-4 py-2 rounded-lg text-sm"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                >
+                  <option>Wszystkie statusy</option>
+                  <option>Opłacone</option>
+                  <option>Oczekujące</option>
+                  <option>Po terminie</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead style="background-color: #f9fafb">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Numer faktury
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Klient
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Data wystawienia
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Termin płatności
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Kwota
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Status
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Akcje
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y" style="border-color: #e5e7eb">
+                  <!-- Invoice 1 -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        FV/2025/10/001
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        Coca-Cola Company
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        jan.kowalski@coca-cola.com
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p style="color: #111827">01.10.2025</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p style="color: #111827">15.10.2025</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-bold" style="color: #111827">145,000 zł</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-3 py-1 text-xs font-medium rounded-full"
+                        style="background-color: #dcfce7; color: #16a34a"
+                      >
+                        Opłacona
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button
+                          onclick="downloadInvoice('FV/2025/10/001')"
+                          class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Pobierz PDF"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="sendInvoice('FV/2025/10/001')"
+                          class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Wyślij email"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Invoice 2 -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        FV/2025/10/002
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        PepsiCo Poland
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        anna.nowak@pepsico.com
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p style="color: #111827">05.10.2025</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p style="color: #111827">19.10.2025</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-bold" style="color: #111827">128,000 zł</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-3 py-1 text-xs font-medium rounded-full"
+                        style="background-color: #fef3c7; color: #f59e0b"
+                      >
+                        Oczekująca
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button
+                          onclick="downloadInvoice('FV/2025/10/002')"
+                          class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Pobierz PDF"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="sendInvoice('FV/2025/10/002')"
+                          class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Wyślij email"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="markAsPaid('FV/2025/10/002')"
+                          class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#f0fdf4'; this.style.color='#16a34a'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Oznacz jako opłacone"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Invoice 3 - Overdue -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        FV/2025/09/187
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        Grupa Żywiec
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        marketing@zywiec.com
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p style="color: #111827">15.09.2025</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p style="color: #dc2626">29.09.2025</p>
+                      <p class="text-xs" style="color: #dc2626">
+                        Po terminie 30 dni
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-bold" style="color: #111827">98,000 zł</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-3 py-1 text-xs font-medium rounded-full"
+                        style="background-color: #fee2e2; color: #dc2626"
+                      >
+                        Po terminie
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button
+                          onclick="downloadInvoice('FV/2025/09/187')"
+                          class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Pobierz PDF"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="sendInvoice('FV/2025/09/187')"
+                          class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Wyślij email"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="markAsPaid('FV/2025/09/187')"
+                          class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#f0fdf4'; this.style.color='#16a34a'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Oznacz jako opłacone"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAYMENTS VIEW -->
+        <div id="payments-view" class="hidden">
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <h3 class="text-lg font-bold mb-2" style="color: #111827">
+                Ostatnie płatności
+              </h3>
+              <p class="text-sm" style="color: #6b7280">
+                Historia wpłat od klientów
+              </p>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <!-- Payment 1 -->
+                <div
+                  class="flex items-center justify-between p-4 rounded-lg border"
+                  style="border-color: #e5e7eb"
+                >
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-12 h-12 rounded-lg flex items-center justify-center"
+                      style="background-color: #f0fdf4"
+                    >
+                      <svg
+                        class="w-6 h-6"
+                        style="color: #16a34a"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Coca-Cola Company
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        FV/2025/10/001 • Przelew bankowy
+                      </p>
+                      <p class="text-xs" style="color: #6b7280">
+                        12.10.2025 14:32
+                      </p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-lg font-bold" style="color: #16a34a">
+                      +145,000 zł
+                    </p>
+                    <span
+                      class="text-xs px-2 py-1 rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Zaksięgowano
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Payment 2 -->
+                <div
+                  class="flex items-center justify-between p-4 rounded-lg border"
+                  style="border-color: #e5e7eb"
+                >
+                  <div class="flex items-center gap-4">
+                    <div
+                      class="w-12 h-12 rounded-lg flex items-center justify-center"
+                      style="background-color: #f0fdf4"
+                    >
+                      <svg
+                        class="w-6 h-6"
+                        style="color: #16a34a"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Haribo Polska
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        FV/2025/09/189 • Przelew bankowy
+                      </p>
+                      <p class="text-xs" style="color: #6b7280">
+                        10.10.2025 09:15
+                      </p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-lg font-bold" style="color: #16a34a">
+                      +76,000 zł
+                    </p>
+                    <span
+                      class="text-xs px-2 py-1 rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Zaksięgowano
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRANSACTIONS VIEW -->
+        <div id="transactions-view" class="hidden">
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <h3 class="text-lg font-bold mb-2" style="color: #111827">
+                Historia wszystkich transakcji
+              </h3>
+              <p class="text-sm" style="color: #6b7280">
+                Pełny dziennik operacji finansowych
+              </p>
+            </div>
+            <div class="p-8 text-center" style="color: #6b7280">
+              <p>Pełna historia transakcji</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

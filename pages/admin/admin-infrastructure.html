@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Infrastruktura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../../js/tableSort.js"></script>
+    <script src="../../js/loadAdminComponents.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn !== "true" || userRole !== "admin") {
+          window.location.href = "../../index.html";
+        }
+
+        document.getElementById("page-title").textContent =
+          "Zarządzanie infrastrukturą";
+        document.getElementById("page-subtitle").textContent =
+          "Ekrany, lokalizacje i harmonogramy";
+      });
+
+      function logout(e) {
+        e.preventDefault();
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.clear();
+        window.location.href = "../../index.html";
+      }
+
+      // Przełączanie zakładek
+      function showTab(tabName) {
+        const tabs = ["screens", "locations", "schedules"];
+        tabs.forEach((tab) => {
+          document.getElementById(tab + "-tab").classList.add("hidden");
+          document
+            .getElementById(tab + "-btn")
+            .classList.remove("border-primary", "text-primary");
+          document
+            .getElementById(tab + "-btn")
+            .classList.add("border-transparent", "text-gray-500");
+        });
+
+        document.getElementById(tabName + "-tab").classList.remove("hidden");
+        document
+          .getElementById(tabName + "-btn")
+          .classList.remove("border-transparent", "text-gray-500");
+        document
+          .getElementById(tabName + "-btn")
+          .classList.add("border-primary", "text-primary");
+      }
+
+      // Modale
+      function showAddScreenModal() {
+        document.getElementById("addScreenModal").classList.remove("hidden");
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+      }
+
+      function showAddLocationModal() {
+        document.getElementById("addLocationModal").classList.remove("hidden");
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("addScreenModal").classList.add("hidden");
+        document.getElementById("addLocationModal").classList.add("hidden");
+        document.getElementById("modalBackdrop").classList.add("hidden");
+      }
+
+      function saveScreen(e) {
+        e.preventDefault();
+        alert("Ekran został dodany!");
+        closeModal();
+      }
+
+      function saveLocation(e) {
+        e.preventDefault();
+        alert("Lokalizacja została dodana!");
+        closeModal();
+      }
+
+      function toggleScreenStatus(screenId) {
+        alert("Status ekranu został zmieniony");
+      }
+
+      function deleteScreen(screenName) {
+        if (confirm(`Czy na pewno chcesz usunąć ekran ${screenName}?`)) {
+          alert("Ekran został usunięty!");
+        }
+      }
+    </script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <div id="admin-sidebar-placeholder"></div>
+
+    <main class="ml-64">
+      <div id="admin-topbar-placeholder"></div>
+
+      <div class="p-8">
+        <!-- Tabs Navigation -->
+        <div class="border-b mb-8" style="border-color: #e5e7eb">
+          <nav class="-mb-px flex space-x-8">
+            <button
+              id="screens-btn"
+              onclick="showTab('screens')"
+              class="py-4 px-1 border-b-2 font-medium text-sm transition-colors border-primary text-primary"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+                Ekrany
+              </div>
+            </button>
+            <button
+              id="locations-btn"
+              onclick="showTab('locations')"
+              class="py-4 px-1 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500"
+              style="color: #6b7280"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                Lokalizacje
+              </div>
+            </button>
+            <button
+              id="schedules-btn"
+              onclick="showTab('schedules')"
+              class="py-4 px-1 border-b-2 font-medium text-sm transition-colors border-transparent text-gray-500"
+              style="color: #6b7280"
+            >
+              <div class="flex items-center gap-2">
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                Harmonogramy
+              </div>
+            </button>
+          </nav>
+        </div>
+
+        <!-- SCREENS TAB -->
+        <div id="screens-tab">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h2 class="text-2xl font-bold mb-2" style="color: #111827">
+                Zarządzanie ekranami
+              </h2>
+              <p class="text-sm" style="color: #6b7280">
+                Monitoruj i konfiguruj ekrany cyfrowe
+              </p>
+            </div>
+            <button
+              onclick="showAddScreenModal()"
+              class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Dodaj ekran
+            </button>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div
+              class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+              style="background-color: #ffffff; border-color: #e5e7eb"
+              onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+              onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+            >
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                style="background-color: #eff6ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #3b82f6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <p class="text-sm mb-1" style="color: #6b7280">
+                Wszystkie ekrany
+              </p>
+              <p class="text-3xl font-bold" style="color: #111827">1,847</p>
+            </div>
+
+            <div
+              class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+              style="background-color: #ffffff; border-color: #e5e7eb"
+              onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+              onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+            >
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                style="background-color: #f0fdf4"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #16a34a"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <p class="text-sm mb-1" style="color: #6b7280">Online</p>
+              <p class="text-3xl font-bold" style="color: #111827">1,816</p>
+              <p class="text-xs mt-2" style="color: #16a34a">98.4% uptime</p>
+            </div>
+
+            <div
+              class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+              style="background-color: #ffffff; border-color: #e5e7eb"
+              onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+              onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+            >
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                style="background-color: #fee2e2"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #dc2626"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+              <p class="text-sm mb-1" style="color: #6b7280">Offline</p>
+              <p class="text-3xl font-bold" style="color: #111827">31</p>
+              <p class="text-xs mt-2" style="color: #dc2626">Wymaga uwagi</p>
+            </div>
+
+            <div
+              class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+              style="background-color: #ffffff; border-color: #e5e7eb"
+              onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+              onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+            >
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                style="background-color: #fef3c7"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #f59e0b"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                </svg>
+              </div>
+              <p class="text-sm mb-1" style="color: #6b7280">Lokalizacje</p>
+              <p class="text-3xl font-bold" style="color: #111827">243</p>
+            </div>
+          </div>
+
+          <!-- Screens Table -->
+          <div
+            class="rounded-lg border overflow-hidden"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <div class="flex gap-4">
+                <input
+                  type="text"
+                  placeholder="Szukaj ekranu..."
+                  class="flex-1 px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                />
+                <select
+                  class="px-4 py-2 rounded-lg text-sm"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                >
+                  <option>Wszystkie statusy</option>
+                  <option>Online</option>
+                  <option>Offline</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead style="background-color: #f9fafb">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      ID Ekranu
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Lokalizacja
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Status
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Rozdzielczość
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Uptime
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Akcje
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y" style="border-color: #e5e7eb">
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">SCR-001</p>
+                      <p class="text-sm" style="color: #6b7280">
+                        43" LED Display
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        Biedronka Warszawa Centrum
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        ul. Marszałkowska 15
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-3 py-1 text-xs font-medium rounded-full"
+                        style="background-color: #dcfce7; color: #16a34a"
+                      >
+                        Online
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        1920x1080
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">99.8%</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button
+                          class="p-2 rounded-lg transition-all"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="deleteScreen('SCR-001')"
+                          class="p-2 rounded-lg transition-all"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#fee2e2'; this.style.color='#dc2626'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOCATIONS TAB -->
+        <div id="locations-tab" class="hidden">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h2 class="text-2xl font-bold mb-2" style="color: #111827">
+                Zarządzanie lokalizacjami
+              </h2>
+              <p class="text-sm" style="color: #6b7280">
+                Sklepy i punkty z ekranami
+              </p>
+            </div>
+            <button
+              onclick="showAddLocationModal()"
+              class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Dodaj lokalizację
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div
+              class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+              style="background-color: #ffffff; border-color: #e5e7eb"
+              onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+              onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+            >
+              <h3 class="font-bold mb-4" style="color: #111827">
+                Biedronka Warszawa Centrum
+              </h3>
+              <p class="text-sm mb-2" style="color: #6b7280">
+                ul. Marszałkowska 15, 00-001 Warszawa
+              </p>
+              <div class="flex items-center gap-4 mt-4">
+                <div>
+                  <p class="text-xs" style="color: #6b7280">Ekrany</p>
+                  <p class="text-lg font-bold" style="color: #111827">8</p>
+                </div>
+                <div>
+                  <p class="text-xs" style="color: #6b7280">Online</p>
+                  <p class="text-lg font-bold" style="color: #16a34a">8</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCHEDULES TAB -->
+        <div id="schedules-tab" class="hidden">
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-2" style="color: #111827">
+              Harmonogramy wyświetlania
+            </h2>
+            <p class="text-sm" style="color: #6b7280">
+              Zaplanuj emisję kampanii na ekranach
+            </p>
+          </div>
+
+          <div
+            class="p-8 rounded-lg border text-center"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <p style="color: #6b7280">
+              Funkcja harmonogramów będzie dostępna wkrótce
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Backdrop -->
+    <div
+      id="modalBackdrop"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+      onclick="closeModal()"
+    ></div>
+
+    <!-- Add Screen Modal -->
+    <div
+      id="addScreenModal"
+      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
+    >
+      <div
+        class="rounded-lg shadow-2xl"
+        style="background-color: #ffffff; border: 1px solid #e5e7eb"
+      >
+        <div class="p-6 border-b" style="border-color: #e5e7eb">
+          <h3 class="text-xl font-bold" style="color: #111827">
+            Dodaj nowy ekran
+          </h3>
+        </div>
+        <form onsubmit="saveScreen(event)" class="p-6">
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >ID Ekranu</label
+              >
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-lg"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+                placeholder="SCR-001"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Rozdzielczość</label
+              >
+              <select
+                class="w-full px-4 py-2 rounded-lg"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              >
+                <option>1920x1080 (Full HD)</option>
+                <option>3840x2160 (4K)</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Lokalizacja</label
+            >
+            <select
+              class="w-full px-4 py-2 rounded-lg"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+            >
+              <option>Wybierz lokalizację</option>
+              <option>Biedronka Warszawa Centrum</option>
+            </select>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 rounded-lg"
+              style="border: 1px solid #d1d5db; color: #374151"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-primary text-white rounded-lg"
+            >
+              Dodaj ekran
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add Location Modal -->
+    <div
+      id="addLocationModal"
+      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
+    >
+      <div
+        class="rounded-lg shadow-2xl"
+        style="background-color: #ffffff; border: 1px solid #e5e7eb"
+      >
+        <div class="p-6 border-b" style="border-color: #e5e7eb">
+          <h3 class="text-xl font-bold" style="color: #111827">
+            Dodaj nową lokalizację
+          </h3>
+        </div>
+        <form onsubmit="saveLocation(event)" class="p-6">
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Nazwa sklepu</label
+            >
+            <input
+              type="text"
+              required
+              class="w-full px-4 py-2 rounded-lg"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+              placeholder="Biedronka Warszawa Centrum"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Adres</label
+            >
+            <input
+              type="text"
+              required
+              class="w-full px-4 py-2 rounded-lg"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+              placeholder="ul. Marszałkowska 15, Warszawa"
+            />
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 rounded-lg"
+              style="border: 1px solid #d1d5db; color: #374151"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-primary text-white rounded-lg"
+            >
+              Dodaj lokalizację
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

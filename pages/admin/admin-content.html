@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Zarządzanie contentem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../../js/tableSort.js"></script>
+    <script src="../../js/loadAdminComponents.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn !== "true" || userRole !== "admin") {
+          window.location.href = "../../index.html";
+        }
+
+        document.getElementById("page-title").textContent =
+          "Zarządzanie contentem";
+        document.getElementById("page-subtitle").textContent =
+          "Moderacja i akceptacja materiałów reklamowych";
+      });
+
+      function logout(e) {
+        e.preventDefault();
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.clear();
+        window.location.href = "../../index.html";
+      }
+
+      // Przełączanie widoków
+      function showView(view) {
+        const views = ["pending", "approved", "rejected"];
+        views.forEach((v) => {
+          document.getElementById(v + "-view").classList.add("hidden");
+          document
+            .getElementById(v + "-btn")
+            .classList.remove("bg-primary", "text-white");
+          document
+            .getElementById(v + "-btn")
+            .classList.add("bg-white", "text-gray-700");
+        });
+
+        document.getElementById(view + "-view").classList.remove("hidden");
+        document
+          .getElementById(view + "-btn")
+          .classList.remove("bg-white", "text-gray-700");
+        document
+          .getElementById(view + "-btn")
+          .classList.add("bg-primary", "text-white");
+      }
+
+      // Funkcje modali
+      function showPreviewModal(contentId, title) {
+        document.getElementById("previewContentId").textContent = contentId;
+        document.getElementById("previewTitle").textContent = title;
+        document.getElementById("previewModal").classList.remove("hidden");
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+      }
+
+      function showEditModal(contentId, title) {
+        document.getElementById("editContentId").value = contentId;
+        document.getElementById("editTitle").value = title;
+        document.getElementById("editModal").classList.remove("hidden");
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("previewModal").classList.add("hidden");
+        document.getElementById("editModal").classList.add("hidden");
+        document.getElementById("modalBackdrop").classList.add("hidden");
+      }
+
+      // Akcje na treściach
+      function approveContent(contentId) {
+        if (confirm(`Czy zatwierdzić materiał ${contentId}?`)) {
+          alert("Materiał został zatwierdzony!");
+          // Tu będzie logika API
+        }
+      }
+
+      function rejectContent(contentId) {
+        const reason = prompt("Podaj powód odrzucenia:");
+        if (reason) {
+          alert(`Materiał ${contentId} został odrzucony. Powód: ${reason}`);
+          // Tu będzie logika API
+        }
+      }
+
+      function deleteContent(contentId) {
+        if (
+          confirm(
+            `Czy na pewno chcesz usunąć materiał ${contentId}? Ta operacja jest nieodwracalna.`
+          )
+        ) {
+          alert("Materiał został usunięty!");
+          // Tu będzie logika API
+        }
+      }
+
+      function saveContentChanges(e) {
+        e.preventDefault();
+        alert("Zmiany zostały zapisane!");
+        closeModal();
+      }
+    </script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <div id="admin-sidebar-placeholder"></div>
+
+    <main class="ml-64">
+      <div id="admin-topbar-placeholder"></div>
+
+      <div class="p-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #fef3c7"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #f59e0b"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #fef3c7; color: #f59e0b"
+              >
+                Wymaga uwagi
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Oczekuje na akceptację
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">23</p>
+          </div>
+
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #f0fdf4"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #16a34a"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Zaakceptowane</p>
+            <p class="text-3xl font-bold" style="color: #111827">1,482</p>
+          </div>
+
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #fee2e2"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #dc2626"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Odrzucone</p>
+            <p class="text-3xl font-bold" style="color: #111827">47</p>
+          </div>
+
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #eff6ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #3b82f6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Wszystkie materiały
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">1,552</p>
+          </div>
+        </div>
+
+        <!-- View Selector -->
+        <div class="flex gap-3 mb-6">
+          <button
+            id="pending-btn"
+            onclick="showView('pending')"
+            class="px-6 py-3 rounded-lg font-medium transition-colors bg-primary hover:bg-blue-600 text-white"
+          >
+            Oczekujące (23)
+          </button>
+          <button
+            id="approved-btn"
+            onclick="showView('approved')"
+            class="px-6 py-3 rounded-lg font-medium transition-colors bg-white hover:bg-gray-50 text-gray-700"
+            style="border: 1px solid #e5e7eb"
+          >
+            Zaakceptowane
+          </button>
+          <button
+            id="rejected-btn"
+            onclick="showView('rejected')"
+            class="px-6 py-3 rounded-lg font-medium transition-colors bg-white hover:bg-gray-50 text-gray-700"
+            style="border: 1px solid #e5e7eb"
+          >
+            Odrzucone
+          </button>
+        </div>
+
+        <!-- PENDING VIEW -->
+        <div id="pending-view">
+          <div
+            class="rounded-lg border overflow-hidden mb-6"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <div class="flex gap-4">
+                <input
+                  type="text"
+                  placeholder="Szukaj materiału..."
+                  class="flex-1 px-4 py-2 rounded-lg text-sm"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                />
+                <select
+                  class="px-4 py-2 rounded-lg text-sm"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                >
+                  <option>Wszystkie typy</option>
+                  <option>Obraz</option>
+                  <option>Wideo</option>
+                  <option>HTML5</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead style="background-color: #f9fafb">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Materiał
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Klient
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Typ
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Rozmiar
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Data przesłania
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                      style="color: #6b7280"
+                    >
+                      Akcje
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y" style="border-color: #e5e7eb">
+                  <!-- Content Item 1 -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-16 h-16 rounded flex items-center justify-center"
+                          style="background-color: #eff6ff"
+                        >
+                          <svg
+                            class="w-8 h-8"
+                            style="color: #3b82f6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <p class="font-medium" style="color: #111827">
+                            Coca-Cola Letnia Kampania 2025
+                          </p>
+                          <p class="text-sm" style="color: #6b7280">
+                            #CNT-2025-001
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        Coca-Cola Company
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">Jan Kowalski</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-3 py-1 text-xs font-medium rounded-full"
+                        style="background-color: #eff6ff; color: #3b82f6"
+                      >
+                        Obraz
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        1920x1080
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">2.4 MB</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        29.10.2025
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">2 godz. temu</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button
+                          onclick="showPreviewModal('#CNT-2025-001', 'Coca-Cola Letnia Kampania 2025')"
+                          class="p-2 rounded-lg transition-all"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Podgląd"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="approveContent('#CNT-2025-001')"
+                          class="p-2 rounded-lg transition-all"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#f0fdf4'; this.style.color='#16a34a'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Zatwierdź"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="rejectContent('#CNT-2025-001')"
+                          class="p-2 rounded-lg transition-all"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#fee2e2'; this.style.color='#dc2626'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Odrzuć"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <!-- Content Item 2 -->
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-16 h-16 rounded flex items-center justify-center"
+                          style="background-color: #f5f3ff"
+                        >
+                          <svg
+                            class="w-8 h-8"
+                            style="color: #8b5cf6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                            />
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <p class="font-medium" style="color: #111827">
+                            Pepsi MAX - Zima 2025
+                          </p>
+                          <p class="text-sm" style="color: #6b7280">
+                            #CNT-2025-002
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        PepsiCo Poland
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">Anna Nowak</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-3 py-1 text-xs font-medium rounded-full"
+                        style="background-color: #f5f3ff; color: #8b5cf6"
+                      >
+                        Wideo
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        1920x1080
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">15.8 MB</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <p class="font-medium" style="color: #111827">
+                        28.10.2025
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">1 dzień temu</p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex gap-2">
+                        <button
+                          onclick="showPreviewModal('#CNT-2025-002', 'Pepsi MAX - Zima 2025')"
+                          class="p-2 rounded-lg transition-all"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Podgląd"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="approveContent('#CNT-2025-002')"
+                          class="p-2 rounded-lg transition-all"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#f0fdf4'; this.style.color='#16a34a'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Zatwierdź"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onclick="rejectContent('#CNT-2025-002')"
+                          class="p-2 rounded-lg transition-all"
+                          style="color: #6b7280"
+                          onmouseover="this.style.backgroundColor='#fee2e2'; this.style.color='#dc2626'"
+                          onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                          title="Odrzuć"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- APPROVED VIEW -->
+        <div id="approved-view" class="hidden">
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <input
+                type="text"
+                placeholder="Szukaj zaakceptowanych materiałów..."
+                class="w-full px-4 py-2 rounded-lg text-sm"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              />
+            </div>
+            <div class="p-8 text-center" style="color: #6b7280">
+              <p>Lista zaakceptowanych materiałów</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- REJECTED VIEW -->
+        <div id="rejected-view" class="hidden">
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <input
+                type="text"
+                placeholder="Szukaj odrzuconych materiałów..."
+                class="w-full px-4 py-2 rounded-lg text-sm"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              />
+            </div>
+            <div class="p-8 text-center" style="color: #6b7280">
+              <p>Lista odrzuconych materiałów</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Backdrop -->
+    <div
+      id="modalBackdrop"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+      onclick="closeModal()"
+    ></div>
+
+    <!-- Preview Modal -->
+    <div
+      id="previewModal"
+      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-4xl"
+    >
+      <div
+        class="rounded-lg shadow-2xl"
+        style="background-color: #ffffff; border: 1px solid #e5e7eb"
+      >
+        <div class="p-6 border-b" style="border-color: #e5e7eb">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-xl font-bold" style="color: #111827">
+                Podgląd materiału
+              </h3>
+              <p class="text-sm mt-1" style="color: #6b7280">
+                <span id="previewContentId"></span> -
+                <span id="previewTitle"></span>
+              </p>
+            </div>
+            <button
+              onclick="closeModal()"
+              class="p-2 rounded-lg transition-colors"
+              style="color: #6b7280"
+              onmouseover="this.style.backgroundColor='#f9fafb'"
+              onmouseout="this.style.backgroundColor='transparent'"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="p-6">
+          <div
+            class="flex items-center justify-center rounded-lg"
+            style="background-color: #f9fafb; min-height: 400px"
+          >
+            <p style="color: #6b7280">Podgląd materiału</p>
+          </div>
+        </div>
+        <div
+          class="p-6 border-t flex gap-3 justify-end"
+          style="border-color: #e5e7eb"
+        >
+          <button
+            onclick="rejectContent(document.getElementById('previewContentId').textContent)"
+            class="px-6 py-2 rounded-lg font-medium transition-colors"
+            style="border: 1px solid #dc2626; color: #dc2626"
+            onmouseover="this.style.backgroundColor='#fee2e2'"
+            onmouseout="this.style.backgroundColor='transparent'"
+          >
+            Odrzuć
+          </button>
+          <button
+            onclick="approveContent(document.getElementById('previewContentId').textContent)"
+            class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+          >
+            Zatwierdź
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div
+      id="editModal"
+      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
+    >
+      <div
+        class="rounded-lg shadow-2xl"
+        style="background-color: #ffffff; border: 1px solid #e5e7eb"
+      >
+        <div class="p-6 border-b" style="border-color: #e5e7eb">
+          <h3 class="text-xl font-bold" style="color: #111827">
+            Edytuj materiał
+          </h3>
+        </div>
+        <form onsubmit="saveContentChanges(event)" class="p-6">
+          <input type="hidden" id="editContentId" />
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Tytuł</label
+            >
+            <input
+              id="editTitle"
+              type="text"
+              required
+              class="w-full px-4 py-2 rounded-lg"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Notatki</label
+            >
+            <textarea
+              rows="3"
+              class="w-full px-4 py-2 rounded-lg"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+            ></textarea>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 rounded-lg"
+              style="border: 1px solid #d1d5db; color: #374151"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-primary text-white rounded-lg"
+            >
+              Zapisz
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

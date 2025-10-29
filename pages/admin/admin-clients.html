@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Zarządzanie klientami</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../../js/tableSort.js"></script>
+    <script src="../../js/loadAdminComponents.js"></script>
+    <script>
+      // Sprawdzanie autoryzacji przy wejściu na stronę
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn !== "true" || userRole !== "admin") {
+          // Użytkownik nie jest zalogowany lub nie ma uprawnień admina
+          window.location.href = "../../index.html";
+        }
+
+        // Zaktualizuj tytuły
+        document.getElementById("page-title").textContent =
+          "Zarządzanie klientami";
+        document.getElementById("page-subtitle").textContent =
+          "Dodawanie i edycja kont klientów";
+      });
+
+      // Funkcja wylogowania
+      function logout(e) {
+        e.preventDefault();
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.clear();
+        window.location.href = "../../index.html";
+      }
+
+      // Funkcja pokazująca modal dodawania klienta
+      function showAddClientModal() {
+        document.getElementById("addClientModal").classList.remove("hidden");
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+      }
+
+      // Funkcja zamykająca modal
+      function closeModal() {
+        document.getElementById("addClientModal").classList.add("hidden");
+        document.getElementById("modalBackdrop").classList.add("hidden");
+        document.getElementById("editClientModal").classList.add("hidden");
+      }
+
+      // Funkcja pokazująca modal edycji
+      function showEditClientModal(clientName, clientEmail, clientCompany) {
+        document.getElementById("editClientName").value = clientName;
+        document.getElementById("editClientEmail").value = clientEmail;
+        document.getElementById("editClientCompany").value = clientCompany;
+        document.getElementById("editClientModal").classList.remove("hidden");
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+      }
+
+      // Funkcja zapisująca nowego klienta
+      function saveNewClient(e) {
+        e.preventDefault();
+        // Tu będzie logika zapisywania do API
+        alert("Klient został dodany!");
+        closeModal();
+      }
+
+      // Funkcja zapisująca zmiany klienta
+      function saveClientChanges(e) {
+        e.preventDefault();
+        // Tu będzie logika zapisywania zmian do API
+        alert("Zmiany zostały zapisane!");
+        closeModal();
+      }
+
+      // Funkcja usuwania klienta
+      function deleteClient(clientName) {
+        if (
+          confirm(
+            `Czy na pewno chcesz usunąć klienta ${clientName}? Ta operacja jest nieodwracalna.`
+          )
+        ) {
+          // Tu będzie logika usuwania z API
+          alert("Klient został usunięty!");
+        }
+      }
+
+      // Funkcja zmiany statusu klienta
+      function toggleClientStatus(clientName) {
+        // Tu będzie logika zmiany statusu w API
+        alert(`Status klienta ${clientName} został zmieniony`);
+      }
+    </script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <!-- Admin Sidebar placeholder -->
+    <div id="admin-sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="ml-64">
+      <!-- Admin Top Bar placeholder -->
+      <div id="admin-topbar-placeholder"></div>
+
+      <!-- Content Area -->
+      <div class="p-8">
+        <!-- Header with Add Button -->
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold mb-2" style="color: #111827">
+              Lista klientów
+            </h2>
+            <p class="text-sm" style="color: #6b7280">
+              Zarządzaj kontami klientów i ich uprawnieniami
+            </p>
+          </div>
+          <button
+            onclick="showAddClientModal()"
+            class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Dodaj klienta
+          </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <!-- Total Clients -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #eff6ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #3b82f6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Wszyscy klienci</p>
+            <p class="text-3xl font-bold" style="color: #111827">247</p>
+          </div>
+
+          <!-- Active Clients -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #f0fdf4"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #16a34a"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Aktywni</p>
+            <p class="text-3xl font-bold" style="color: #111827">234</p>
+          </div>
+
+          <!-- New This Month -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #f5f3ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #8b5cf6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Nowi w tym miesiącu
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">18</p>
+          </div>
+
+          <!-- Inactive Clients -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #fef3c7"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #f59e0b"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Nieaktywni</p>
+            <p class="text-3xl font-bold" style="color: #111827">13</p>
+          </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div
+          class="rounded-lg border mb-8"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="p-6">
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <input
+                  type="text"
+                  placeholder="Szukaj klienta po nazwie, email lub firmie..."
+                  class="w-full px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                />
+              </div>
+              <select
+                class="px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              >
+                <option>Wszystkie statusy</option>
+                <option>Aktywni</option>
+                <option>Nieaktywni</option>
+                <option>Nowi</option>
+              </select>
+              <select
+                class="px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              >
+                <option>Sortuj po nazwie</option>
+                <option>Sortuj po dacie utworzenia</option>
+                <option>Sortuj po kampaniach</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clients Table -->
+        <div
+          class="rounded-lg border overflow-hidden"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="overflow-x-auto">
+            <table id="clients-table" class="w-full" data-sortable>
+              <thead style="background-color: #f9fafb">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Klient
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Firma
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Kampanie
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Budżet
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Data utworzenia
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Akcje
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: #e5e7eb">
+                <!-- Client 1 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded-full flex items-center justify-center font-medium text-white"
+                        style="
+                          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                        "
+                      >
+                        JK
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Jan Kowalski
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          jan.kowalski@coca-cola.com
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Coca-Cola Company
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">Napoje</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Aktywny
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">3 aktywne</p>
+                    <p class="text-sm" style="color: #6b7280">8 zakończonych</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">145k zł</p>
+                    <p class="text-sm" style="color: #6b7280">miesięcznie</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">15.01.2024</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      9 miesięcy temu
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        onclick="showEditClientModal('Jan Kowalski', 'jan.kowalski@coca-cola.com', 'Coca-Cola Company')"
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Edytuj"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onclick="deleteClient('Jan Kowalski')"
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#fee2e2'; this.style.color='#dc2626'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Usuń"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Client 2 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded-full flex items-center justify-center font-medium text-white"
+                        style="
+                          background: linear-gradient(135deg, #10b981, #3b82f6);
+                        "
+                      >
+                        AN
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Anna Nowak
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          anna.nowak@pepsico.com
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      PepsiCo Poland
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">Napoje</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Aktywny
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">2 aktywne</p>
+                    <p class="text-sm" style="color: #6b7280">5 zakończonych</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">128k zł</p>
+                    <p class="text-sm" style="color: #6b7280">miesięcznie</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">03.03.2024</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      7 miesięcy temu
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        onclick="showEditClientModal('Anna Nowak', 'anna.nowak@pepsico.com', 'PepsiCo Poland')"
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Edytuj"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onclick="deleteClient('Anna Nowak')"
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#fee2e2'; this.style.color='#dc2626'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Usuń"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Client 3 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded-full flex items-center justify-center font-medium text-white"
+                        style="
+                          background: linear-gradient(135deg, #f59e0b, #ef4444);
+                        "
+                      >
+                        MK
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Marek Wiśniewski
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          marketing@zywiec.com
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Grupa Żywiec
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      Napoje alkoholowe
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #fef3c7; color: #f59e0b"
+                    >
+                      Nieaktywny
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">1 aktywna</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      12 zakończonych
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">98k zł</p>
+                    <p class="text-sm" style="color: #6b7280">miesięcznie</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">22.06.2023</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      16 miesięcy temu
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        onclick="showEditClientModal('Marek Wiśniewski', 'marketing@zywiec.com', 'Grupa Żywiec')"
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Edytuj"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        onclick="deleteClient('Marek Wiśniewski')"
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#fee2e2'; this.style.color='#dc2626'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Usuń"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Backdrop -->
+    <div
+      id="modalBackdrop"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+      onclick="closeModal()"
+    ></div>
+
+    <!-- Add Client Modal -->
+    <div
+      id="addClientModal"
+      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
+    >
+      <div
+        class="rounded-lg shadow-2xl"
+        style="background-color: #ffffff; border: 1px solid #e5e7eb"
+      >
+        <div class="p-6 border-b" style="border-color: #e5e7eb">
+          <h3 class="text-xl font-bold" style="color: #111827">
+            Dodaj nowego klienta
+          </h3>
+        </div>
+        <form onsubmit="saveNewClient(event)" class="p-6">
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Imię i nazwisko</label
+              >
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+                placeholder="Jan Kowalski"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Email</label
+              >
+              <input
+                type="email"
+                required
+                class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+                placeholder="jan@firma.pl"
+              />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Firma</label
+              >
+              <input
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+                placeholder="Nazwa firmy"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Telefon</label
+              >
+              <input
+                type="tel"
+                class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+                placeholder="+48 123 456 789"
+              />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Branża</label
+            >
+            <select
+              class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+            >
+              <option>Wybierz branżę</option>
+              <option>Napoje</option>
+              <option>Napoje alkoholowe</option>
+              <option>Żywność</option>
+              <option>Kosmetyki</option>
+              <option>Elektronika</option>
+              <option>Inne</option>
+            </select>
+          </div>
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Notatki</label
+            >
+            <textarea
+              rows="3"
+              class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+              placeholder="Dodatkowe informacje o kliencie..."
+            ></textarea>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 rounded-lg font-medium transition-colors"
+              style="
+                background-color: #ffffff;
+                border: 1px solid #d1d5db;
+                color: #374151;
+              "
+              onmouseover="this.style.backgroundColor='#f9fafb'"
+              onmouseout="this.style.backgroundColor='#ffffff'"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            >
+              Dodaj klienta
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Client Modal -->
+    <div
+      id="editClientModal"
+      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
+    >
+      <div
+        class="rounded-lg shadow-2xl"
+        style="background-color: #ffffff; border: 1px solid #e5e7eb"
+      >
+        <div class="p-6 border-b" style="border-color: #e5e7eb">
+          <h3 class="text-xl font-bold" style="color: #111827">
+            Edytuj klienta
+          </h3>
+        </div>
+        <form onsubmit="saveClientChanges(event)" class="p-6">
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Imię i nazwisko</label
+              >
+              <input
+                id="editClientName"
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Email</label
+              >
+              <input
+                id="editClientEmail"
+                type="email"
+                required
+                class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Firma</label
+              >
+              <input
+                id="editClientCompany"
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Status</label
+              >
+              <select
+                class="w-full px-4 py-2 rounded-lg focus:outline-none focus:border-primary transition-colors"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              >
+                <option>Aktywny</option>
+                <option>Nieaktywny</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 rounded-lg font-medium transition-colors"
+              style="
+                background-color: #ffffff;
+                border: 1px solid #d1d5db;
+                color: #374151;
+              "
+              onmouseover="this.style.backgroundColor='#f9fafb'"
+              onmouseout="this.style.backgroundColor='#ffffff'"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            >
+              Zapisz zmiany
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

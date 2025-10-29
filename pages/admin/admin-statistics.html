@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Statystyki</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../js/loadAdminComponents.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn !== "true" || userRole !== "admin") {
+          window.location.href = "../../index.html";
+        }
+
+        // Opóźnienie dla załadowania komponentów
+        setTimeout(() => {
+          document.getElementById("page-title").textContent = "Statystyki";
+          document.getElementById("page-subtitle").textContent =
+            "Analityka i raporty systemowe";
+
+          // Inicjalizacja wykresów po załadowaniu wszystkiego
+          initCharts();
+        }, 100);
+      });
+
+      function logout(e) {
+        e.preventDefault();
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.clear();
+        window.location.href = "../../index.html";
+      }
+
+      function initCharts() {
+        // Sprawdź czy Chart.js jest załadowany
+        if (typeof Chart === "undefined") {
+          console.error("Chart.js nie został załadowany!");
+          return;
+        }
+
+        // Revenue Chart
+        try {
+          const revenueCanvas = document.getElementById("revenueChart");
+          if (!revenueCanvas) {
+            console.error("Element revenueChart nie istnieje!");
+            return;
+          }
+          const revenueCtx = revenueCanvas.getContext("2d");
+          new Chart(revenueCtx, {
+            type: "line",
+            data: {
+              labels: [
+                "Sty",
+                "Lut",
+                "Mar",
+                "Kwi",
+                "Maj",
+                "Cze",
+                "Lip",
+                "Sie",
+                "Wrz",
+                "Paź",
+              ],
+              datasets: [
+                {
+                  label: "Przychody (tys. zł)",
+                  data: [180, 210, 195, 240, 280, 310, 295, 330, 350, 380],
+                  borderColor: "#3B82F6",
+                  backgroundColor: "rgba(59, 130, 246, 0.1)",
+                  tension: 0.4,
+                  fill: true,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Błąd przy tworzeniu wykresu przychodów:", error);
+        }
+
+        // Campaigns Chart
+        try {
+          const campaignsCanvas = document.getElementById("campaignsChart");
+          if (!campaignsCanvas) {
+            console.error("Element campaignsChart nie istnieje!");
+            return;
+          }
+          const campaignsCtx = campaignsCanvas.getContext("2d");
+          new Chart(campaignsCtx, {
+            type: "bar",
+            data: {
+              labels: [
+                "Sty",
+                "Lut",
+                "Mar",
+                "Kwi",
+                "Maj",
+                "Cze",
+                "Lip",
+                "Sie",
+                "Wrz",
+                "Paź",
+              ],
+              datasets: [
+                {
+                  label: "Aktywne",
+                  data: [120, 135, 128, 150, 165, 178, 172, 185, 195, 210],
+                  backgroundColor: "#16A34A",
+                },
+                {
+                  label: "Zakończone",
+                  data: [80, 85, 92, 88, 95, 102, 108, 115, 122, 132],
+                  backgroundColor: "#6B7280",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                },
+              },
+              scales: {
+                x: {
+                  stacked: false,
+                },
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Błąd przy tworzeniu wykresu kampanii:", error);
+        }
+
+        // Client Distribution Chart
+        try {
+          const clientsCanvas = document.getElementById("clientsChart");
+          if (!clientsCanvas) {
+            console.error("Element clientsChart nie istnieje!");
+            return;
+          }
+          const clientsCtx = clientsCanvas.getContext("2d");
+          new Chart(clientsCtx, {
+            type: "doughnut",
+            data: {
+              labels: ["Napoje", "Żywność", "Kosmetyki", "Elektronika", "Inne"],
+              datasets: [
+                {
+                  data: [35, 25, 18, 12, 10],
+                  backgroundColor: [
+                    "#3B82F6",
+                    "#16A34A",
+                    "#F59E0B",
+                    "#8B5CF6",
+                    "#6B7280",
+                  ],
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                },
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Błąd przy tworzeniu wykresu klientów:", error);
+        }
+
+        // Impressions Chart
+        try {
+          const impressionsCanvas = document.getElementById("impressionsChart");
+          if (!impressionsCanvas) {
+            console.error("Element impressionsChart nie istnieje!");
+            return;
+          }
+          const impressionsCtx = impressionsCanvas.getContext("2d");
+          new Chart(impressionsCtx, {
+            type: "line",
+            data: {
+              labels: ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Niedz"],
+              datasets: [
+                {
+                  label: "Wyświetlenia (tys.)",
+                  data: [850, 920, 880, 950, 1020, 780, 650],
+                  borderColor: "#8B5CF6",
+                  backgroundColor: "rgba(139, 92, 246, 0.1)",
+                  tension: 0.4,
+                  fill: true,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Błąd przy tworzeniu wykresu wyświetleń:", error);
+        }
+      }
+    </script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <div id="admin-sidebar-placeholder"></div>
+
+    <main class="ml-64">
+      <div id="admin-topbar-placeholder"></div>
+
+      <div class="p-8">
+        <!-- Time Period Selector -->
+        <div class="flex justify-between items-center mb-8">
+          <div>
+            <h2 class="text-2xl font-bold mb-2" style="color: #111827">
+              Przegląd statystyk
+            </h2>
+            <p class="text-sm" style="color: #6b7280">
+              Analiza wyników i trendów
+            </p>
+          </div>
+          <select
+            class="px-4 py-2 rounded-lg text-sm"
+            style="
+              background-color: #ffffff;
+              border: 1px solid #e5e7eb;
+              color: #111827;
+            "
+          >
+            <option>Ostatnie 30 dni</option>
+            <option>Ostatnie 90 dni</option>
+            <option>Ostatnie 6 miesięcy</option>
+            <option>Ostatni rok</option>
+            <option>Cały czas</option>
+          </select>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <!-- Total Revenue -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #eff6ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #3b82f6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #dcfce7; color: #16a34a"
+              >
+                +31%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Całkowity przychód
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">2.8M zł</p>
+            <p class="text-xs mt-2" style="color: #6b7280">
+              +680k zł vs. poprzedni miesiąc
+            </p>
+          </div>
+
+          <!-- Total Impressions -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #f5f3ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #8b5cf6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #dcfce7; color: #16a34a"
+              >
+                +18%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Wyświetlenia</p>
+            <p class="text-3xl font-bold" style="color: #111827">28.5M</p>
+            <p class="text-xs mt-2" style="color: #6b7280">
+              +4.2M vs. poprzedni miesiąc
+            </p>
+          </div>
+
+          <!-- Active Campaigns -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #f0fdf4"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #16a34a"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #dcfce7; color: #16a34a"
+              >
+                +23%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Aktywne kampanie</p>
+            <p class="text-3xl font-bold" style="color: #111827">342</p>
+            <p class="text-xs mt-2" style="color: #6b7280">
+              z 1,482 wszystkich
+            </p>
+          </div>
+
+          <!-- Average CPM -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #fef3c7"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #f59e0b"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #fee2e2; color: #dc2626"
+              >
+                -3%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Średni CPM</p>
+            <p class="text-3xl font-bold" style="color: #111827">98 zł</p>
+            <p class="text-xs mt-2" style="color: #6b7280">
+              -3 zł vs. poprzedni
+            </p>
+          </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Revenue Chart -->
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <h3 class="text-lg font-bold" style="color: #111827">
+                Przychody w czasie
+              </h3>
+              <p class="text-sm mt-1" style="color: #6b7280">
+                Ostatnie 10 miesięcy
+              </p>
+            </div>
+            <div class="p-6">
+              <div style="height: 300px">
+                <canvas id="revenueChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campaigns Chart -->
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <h3 class="text-lg font-bold" style="color: #111827">Kampanie</h3>
+              <p class="text-sm mt-1" style="color: #6b7280">
+                Aktywne vs. zakończone
+              </p>
+            </div>
+            <div class="p-6">
+              <div style="height: 300px">
+                <canvas id="campaignsChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Client Distribution -->
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <h3 class="text-lg font-bold" style="color: #111827">
+                Rozkład klientów według branży
+              </h3>
+              <p class="text-sm mt-1" style="color: #6b7280">
+                Procentowy udział
+              </p>
+            </div>
+            <div class="p-6">
+              <div style="height: 300px">
+                <canvas id="clientsChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Impressions by Day -->
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <h3 class="text-lg font-bold" style="color: #111827">
+                Wyświetlenia w tygodniu
+              </h3>
+              <p class="text-sm mt-1" style="color: #6b7280">
+                Średnia dzienna aktywność
+              </p>
+            </div>
+            <div class="p-6">
+              <div style="height: 300px">
+                <canvas id="impressionsChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Performing Content -->
+        <div
+          class="rounded-lg border"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="p-6 border-b" style="border-color: #e5e7eb">
+            <h3 class="text-lg font-bold" style="color: #111827">
+              Top 10 kampanii według wyświetleń
+            </h3>
+            <p class="text-sm mt-1" style="color: #6b7280">
+              Najlepsze wyniki w obecnym okresie
+            </p>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead style="background-color: #f9fafb">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    #
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Kampania
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Klient
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Wyświetlenia
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    CPM
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Przychód
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: #e5e7eb">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4">
+                    <span
+                      class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white"
+                      style="
+                        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+                      "
+                    >
+                      1
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Coca-Cola - Letnia kampania
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">Coca-Cola Company</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">2.3M</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">62 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #16a34a">145k zł</p>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4">
+                    <span
+                      class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white"
+                      style="
+                        background: linear-gradient(135deg, #9ca3af, #6b7280);
+                      "
+                    >
+                      2
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Pepsi MAX - Zima 2025
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">PepsiCo Poland</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">1.8M</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">71 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #16a34a">128k zł</p>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4">
+                    <span
+                      class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white"
+                      style="
+                        background: linear-gradient(135deg, #f59e0b, #d97706);
+                      "
+                    >
+                      3
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Tyskie - Mistrzostwa
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">Grupa Żywiec</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">1.5M</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">65 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #16a34a">98k zł</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

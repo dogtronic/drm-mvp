@@ -19,6 +19,29 @@
     </script>
     <script src="../js/loadComponents.js"></script>
     <script src="../js/tableSort.js"></script>
+    <script>
+      // Sprawdzanie autoryzacji przy wejściu na stronę
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn !== "true" || userRole !== "user") {
+          // Użytkownik nie jest zalogowany lub nie ma uprawnień użytkownika
+          window.location.href = "../index.html";
+        }
+      });
+
+      // Funkcja wylogowania
+      function logout(e) {
+        e.preventDefault();
+        // Wyczyść wszystkie dane z localStorage
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.clear();
+        // Przekieruj do strony logowania
+        window.location.href = "../index.html";
+      }
+    </script>
   </head>
   <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
     <!-- Sidebar placeholder - zostanie wczytany przez JavaScript -->

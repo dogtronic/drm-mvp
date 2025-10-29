@@ -17,6 +17,22 @@
         },
       };
     </script>
+    <script>
+      // Sprawdzanie czy użytkownik jest już zalogowany
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn === "true") {
+          // Użytkownik jest już zalogowany - przekieruj do odpowiedniego dashboard
+          if (userRole === "admin") {
+            window.location.href = "pages/admin/admin-dashboard.html";
+          } else if (userRole === "user") {
+            window.location.href = "pages/dashboard.html";
+          }
+        }
+      });
+    </script>
   </head>
   <body
     class="min-h-screen flex flex-col"
@@ -61,17 +77,18 @@
               <label
                 class="block text-sm font-medium mb-2"
                 style="color: #374151"
-                >E-mail</label
+                >Login</label
               >
               <input
-                type="email"
+                id="username"
+                type="text"
                 class="w-full px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
                 style="
                   background-color: #ffffff;
                   border: 1px solid #d1d5db;
                   color: #111827;
                 "
-                placeholder="twoj@email.com"
+                placeholder="Wpisz login"
                 required
               />
             </div>
@@ -90,6 +107,7 @@
                 </button>
               </div>
               <input
+                id="password"
                 type="password"
                 class="w-full px-4 py-3 rounded-lg focus:outline-none focus:border-primary transition-colors"
                 style="
@@ -100,6 +118,13 @@
                 placeholder="••••••••"
                 required
               />
+            </div>
+
+            <div
+              id="error-message"
+              class="hidden text-sm text-red-600 bg-red-50 px-4 py-2 rounded-lg"
+            >
+              Nieprawidłowy login lub hasło
             </div>
 
             <button
@@ -196,8 +221,29 @@
 
       function login(e) {
         e.preventDefault();
-        // Symulacja logowania - przekierowanie do dashboard
-        window.location.href = "pages/dashboard.html";
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const errorMessage = document.getElementById("error-message");
+
+        // Sprawdzenie danych logowania
+        if (username === "user" && password === "user123") {
+          // Logowanie jako użytkownik - zapisz sesję i przekieruj
+          localStorage.setItem("userRole", "user");
+          localStorage.setItem("isLoggedIn", "true");
+          window.location.href = "pages/dashboard.html";
+        } else if (username === "admin" && password === "admin123") {
+          // Logowanie jako administrator - zapisz sesję i przekieruj
+          localStorage.setItem("userRole", "admin");
+          localStorage.setItem("isLoggedIn", "true");
+          window.location.href = "pages/admin/admin-dashboard.html";
+        } else {
+          // Błędne dane logowania
+          errorMessage.classList.remove("hidden");
+          setTimeout(() => {
+            errorMessage.classList.add("hidden");
+          }, 3000);
+        }
       }
 
       function resetPassword(e) {

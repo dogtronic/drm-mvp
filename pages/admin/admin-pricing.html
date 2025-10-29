@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Cenniki</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../../js/loadAdminComponents.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn !== "true" || userRole !== "admin") {
+          window.location.href = "../../index.html";
+        }
+
+        setTimeout(() => {
+          document.getElementById("page-title").textContent = "Cenniki";
+          document.getElementById("page-subtitle").textContent =
+            "Zarządzanie cenami i pakietami";
+        }, 100);
+      });
+
+      function logout(e) {
+        e.preventDefault();
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.clear();
+        window.location.href = "../../index.html";
+      }
+
+      function showAddPricingModal() {
+        document.getElementById("addPricingModal").classList.remove("hidden");
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+      }
+
+      function showEditPricingModal(name, cpm, minBudget) {
+        document.getElementById("editPricingName").value = name;
+        document.getElementById("editPricingCPM").value = cpm;
+        document.getElementById("editPricingMinBudget").value = minBudget;
+        document.getElementById("editPricingModal").classList.remove("hidden");
+        document.getElementById("modalBackdrop").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("addPricingModal").classList.add("hidden");
+        document.getElementById("editPricingModal").classList.add("hidden");
+        document.getElementById("modalBackdrop").classList.add("hidden");
+      }
+
+      function savePricing(e) {
+        e.preventDefault();
+        alert("Nowy cennik został dodany!");
+        closeModal();
+      }
+
+      function updatePricing(e) {
+        e.preventDefault();
+        alert("Cennik został zaktualizowany!");
+        closeModal();
+      }
+
+      function deletePricing(name) {
+        if (confirm(`Czy na pewno chcesz usunąć cennik "${name}"?`)) {
+          alert("Cennik został usunięty!");
+        }
+      }
+    </script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <div id="admin-sidebar-placeholder"></div>
+
+    <main class="ml-64">
+      <div id="admin-topbar-placeholder"></div>
+
+      <div class="p-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold mb-2" style="color: #111827">
+              Zarządzanie cennikami
+            </h2>
+            <p class="text-sm" style="color: #6b7280">
+              Konfiguracja pakietów i stawek CPM
+            </p>
+          </div>
+          <button
+            onclick="showAddPricingModal()"
+            class="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Dodaj cennik
+          </button>
+        </div>
+
+        <!-- Pricing Packages -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- Basic Package -->
+          <div
+            class="rounded-lg border overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.borderColor='#e5e7eb'"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-bold" style="color: #111827">Basic</h3>
+                <span
+                  class="px-3 py-1 text-xs font-medium rounded-full"
+                  style="background-color: #eff6ff; color: #3b82f6"
+                >
+                  Aktywny
+                </span>
+              </div>
+              <p class="text-sm" style="color: #6b7280">
+                Podstawowy pakiet dla małych kampanii
+              </p>
+            </div>
+            <div class="p-6">
+              <div class="mb-6">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-4xl font-bold" style="color: #111827"
+                    >85 zł</span
+                  >
+                  <span style="color: #6b7280">/CPM</span>
+                </div>
+              </div>
+              <ul class="space-y-3 mb-6">
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Min. budżet: 5,000 zł</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Standard locations</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Raporty podstawowe</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Support email</span
+                  >
+                </li>
+              </ul>
+              <div class="flex gap-2">
+                <button
+                  onclick="showEditPricingModal('Basic', '85', '5000')"
+                  class="flex-1 px-4 py-2 rounded-lg font-medium transition-colors"
+                  style="border: 1px solid #e5e7eb; color: #374151"
+                  onmouseover="this.style.backgroundColor='#f9fafb'"
+                  onmouseout="this.style.backgroundColor='transparent'"
+                >
+                  Edytuj
+                </button>
+                <button
+                  onclick="deletePricing('Basic')"
+                  class="px-4 py-2 rounded-lg transition-colors"
+                  style="color: #dc2626"
+                  onmouseover="this.style.backgroundColor='#fee2e2'"
+                  onmouseout="this.style.backgroundColor='transparent'"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional Package -->
+          <div
+            class="rounded-lg border-2 overflow-hidden relative transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="border-color: #3b82f6; background-color: #ffffff"
+          >
+            <div
+              class="absolute top-0 right-0 px-3 py-1 text-xs font-medium text-white"
+              style="background-color: #3b82f6"
+            >
+              Najpopularniejszy
+            </div>
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-bold" style="color: #111827">
+                  Professional
+                </h3>
+                <span
+                  class="px-3 py-1 text-xs font-medium rounded-full"
+                  style="background-color: #dcfce7; color: #16a34a"
+                >
+                  Aktywny
+                </span>
+              </div>
+              <p class="text-sm" style="color: #6b7280">
+                Dla średnich i dużych kampanii
+              </p>
+            </div>
+            <div class="p-6">
+              <div class="mb-6">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-4xl font-bold" style="color: #111827"
+                    >65 zł</span
+                  >
+                  <span style="color: #6b7280">/CPM</span>
+                </div>
+              </div>
+              <ul class="space-y-3 mb-6">
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Min. budżet: 20,000 zł</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Premium locations</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Raporty zaawansowane</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Priority support</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Dedykowany opiekun</span
+                  >
+                </li>
+              </ul>
+              <div class="flex gap-2">
+                <button
+                  onclick="showEditPricingModal('Professional', '65', '20000')"
+                  class="flex-1 px-4 py-2 rounded-lg font-medium transition-colors"
+                  style="border: 1px solid #e5e7eb; color: #374151"
+                  onmouseover="this.style.backgroundColor='#f9fafb'"
+                  onmouseout="this.style.backgroundColor='transparent'"
+                >
+                  Edytuj
+                </button>
+                <button
+                  onclick="deletePricing('Professional')"
+                  class="px-4 py-2 rounded-lg transition-colors"
+                  style="color: #dc2626"
+                  onmouseover="this.style.backgroundColor='#fee2e2'"
+                  onmouseout="this.style.backgroundColor='transparent'"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enterprise Package -->
+          <div
+            class="rounded-lg border overflow-hidden transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.borderColor='#e5e7eb'"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-lg font-bold" style="color: #111827">
+                  Enterprise
+                </h3>
+                <span
+                  class="px-3 py-1 text-xs font-medium rounded-full"
+                  style="background-color: #dcfce7; color: #16a34a"
+                >
+                  Aktywny
+                </span>
+              </div>
+              <p class="text-sm" style="color: #6b7280">
+                Dla korporacji i dużych marek
+              </p>
+            </div>
+            <div class="p-6">
+              <div class="mb-6">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-4xl font-bold" style="color: #111827"
+                    >45 zł</span
+                  >
+                  <span style="color: #6b7280">/CPM</span>
+                </div>
+              </div>
+              <ul class="space-y-3 mb-6">
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Min. budżet: 100,000 zł</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Wszystkie lokalizacje</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >Raporty na zamówienie</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151"
+                    >24/7 Support</span
+                  >
+                </li>
+                <li class="flex items-start gap-2">
+                  <svg
+                    class="w-5 h-5 mt-0.5"
+                    style="color: #16a34a"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span class="text-sm" style="color: #374151">API Access</span>
+                </li>
+              </ul>
+              <div class="flex gap-2">
+                <button
+                  onclick="showEditPricingModal('Enterprise', '45', '100000')"
+                  class="flex-1 px-4 py-2 rounded-lg font-medium transition-colors"
+                  style="border: 1px solid #e5e7eb; color: #374151"
+                  onmouseover="this.style.backgroundColor='#f9fafb'"
+                  onmouseout="this.style.backgroundColor='transparent'"
+                >
+                  Edytuj
+                </button>
+                <button
+                  onclick="deletePricing('Enterprise')"
+                  class="px-4 py-2 rounded-lg transition-colors"
+                  style="color: #dc2626"
+                  onmouseover="this.style.backgroundColor='#fee2e2'"
+                  onmouseout="this.style.backgroundColor='transparent'"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location-based Pricing -->
+        <div
+          class="rounded-lg border mb-8"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="p-6 border-b" style="border-color: #e5e7eb">
+            <h3 class="text-lg font-bold" style="color: #111827">
+              Cennik według lokalizacji
+            </h3>
+            <p class="text-sm mt-1" style="color: #6b7280">
+              Różne stawki dla różnych kategorii sklepów
+            </p>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead style="background-color: #f9fafb">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Kategoria
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    CPM Standard
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    CPM Premium
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Liczba lokalizacji
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Akcje
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: #e5e7eb">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Centra handlowe - Tier 1
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      Największe centra w miastach
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">120 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">180 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">45 lokalizacji</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <button
+                      class="p-2 rounded-lg transition-all"
+                      style="color: #6b7280"
+                      onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                      onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Supermarkety - Tier 2
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      Średnie supermarkety
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">85 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">120 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">128 lokalizacji</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <button
+                      class="p-2 rounded-lg transition-all"
+                      style="color: #6b7280"
+                      onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                      onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Sklepy osiedlowe - Tier 3
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      Małe sklepy lokalne
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">65 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-bold" style="color: #111827">90 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p style="color: #111827">312 lokalizacji</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <button
+                      class="p-2 rounded-lg transition-all"
+                      style="color: #6b7280"
+                      onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                      onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Special Offers -->
+        <div
+          class="rounded-lg border"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="p-6 border-b" style="border-color: #e5e7eb">
+            <h3 class="text-lg font-bold" style="color: #111827">
+              Oferty specjalne i zniżki
+            </h3>
+            <p class="text-sm mt-1" style="color: #6b7280">
+              Promocje dla długoterminowych kontraktów
+            </p>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div
+                class="p-4 rounded-lg border"
+                style="border-color: #e5e7eb; background-color: #f9fafb"
+              >
+                <div class="flex items-center gap-3 mb-2">
+                  <div
+                    class="w-10 h-10 rounded-lg flex items-center justify-center"
+                    style="background-color: #dcfce7"
+                  >
+                    <span class="text-lg font-bold" style="color: #16a34a"
+                      >5%</span
+                    >
+                  </div>
+                  <div>
+                    <p class="font-medium" style="color: #111827">
+                      Kontrakt 3-miesięczny
+                    </p>
+                    <p class="text-xs" style="color: #6b7280">
+                      Min. 3 miesiące
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="p-4 rounded-lg border"
+                style="border-color: #e5e7eb; background-color: #f9fafb"
+              >
+                <div class="flex items-center gap-3 mb-2">
+                  <div
+                    class="w-10 h-10 rounded-lg flex items-center justify-center"
+                    style="background-color: #dcfce7"
+                  >
+                    <span class="text-lg font-bold" style="color: #16a34a"
+                      >10%</span
+                    >
+                  </div>
+                  <div>
+                    <p class="font-medium" style="color: #111827">
+                      Kontrakt 6-miesięczny
+                    </p>
+                    <p class="text-xs" style="color: #6b7280">
+                      Min. 6 miesięcy
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="p-4 rounded-lg border"
+                style="border-color: #e5e7eb; background-color: #f9fafb"
+              >
+                <div class="flex items-center gap-3 mb-2">
+                  <div
+                    class="w-10 h-10 rounded-lg flex items-center justify-center"
+                    style="background-color: #dcfce7"
+                  >
+                    <span class="text-lg font-bold" style="color: #16a34a"
+                      >15%</span
+                    >
+                  </div>
+                  <div>
+                    <p class="font-medium" style="color: #111827">
+                      Kontrakt roczny
+                    </p>
+                    <p class="text-xs" style="color: #6b7280">
+                      Min. 12 miesięcy
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Backdrop -->
+    <div
+      id="modalBackdrop"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+      onclick="closeModal()"
+    ></div>
+
+    <!-- Add Pricing Modal -->
+    <div
+      id="addPricingModal"
+      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
+    >
+      <div
+        class="rounded-lg shadow-2xl"
+        style="background-color: #ffffff; border: 1px solid #e5e7eb"
+      >
+        <div class="p-6 border-b" style="border-color: #e5e7eb">
+          <h3 class="text-xl font-bold" style="color: #111827">
+            Dodaj nowy cennik
+          </h3>
+        </div>
+        <form onsubmit="savePricing(event)" class="p-6">
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Nazwa pakietu</label
+            >
+            <input
+              type="text"
+              required
+              class="w-full px-4 py-2 rounded-lg"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+              placeholder="Premium Plus"
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >CPM (zł)</label
+              >
+              <input
+                type="number"
+                required
+                class="w-full px-4 py-2 rounded-lg"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+                placeholder="75"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Min. budżet (zł)</label
+              >
+              <input
+                type="number"
+                required
+                class="w-full px-4 py-2 rounded-lg"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+                placeholder="10000"
+              />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Opis</label
+            >
+            <textarea
+              rows="3"
+              class="w-full px-4 py-2 rounded-lg"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+              placeholder="Szczegółowy opis pakietu..."
+            ></textarea>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 rounded-lg"
+              style="border: 1px solid #d1d5db; color: #374151"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-primary text-white rounded-lg"
+            >
+              Dodaj cennik
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Pricing Modal -->
+    <div
+      id="editPricingModal"
+      class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl"
+    >
+      <div
+        class="rounded-lg shadow-2xl"
+        style="background-color: #ffffff; border: 1px solid #e5e7eb"
+      >
+        <div class="p-6 border-b" style="border-color: #e5e7eb">
+          <h3 class="text-xl font-bold" style="color: #111827">
+            Edytuj cennik
+          </h3>
+        </div>
+        <form onsubmit="updatePricing(event)" class="p-6">
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-2" style="color: #374151"
+              >Nazwa pakietu</label
+            >
+            <input
+              id="editPricingName"
+              type="text"
+              required
+              class="w-full px-4 py-2 rounded-lg"
+              style="
+                background-color: #f9fafb;
+                border: 1px solid #e5e7eb;
+                color: #111827;
+              "
+            />
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >CPM (zł)</label
+              >
+              <input
+                id="editPricingCPM"
+                type="number"
+                required
+                class="w-full px-4 py-2 rounded-lg"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              />
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium mb-2"
+                style="color: #374151"
+                >Min. budżet (zł)</label
+              >
+              <input
+                id="editPricingMinBudget"
+                type="number"
+                required
+                class="w-full px-4 py-2 rounded-lg"
+                style="
+                  background-color: #f9fafb;
+                  border: 1px solid #e5e7eb;
+                  color: #111827;
+                "
+              />
+            </div>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 rounded-lg"
+              style="border: 1px solid #d1d5db; color: #374151"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-primary text-white rounded-lg"
+            >
+              Zapisz zmiany
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

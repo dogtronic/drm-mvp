@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogtronic Retail Media - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6",
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="../../js/tableSort.js"></script>
+    <script src="../../js/loadAdminComponents.js"></script>
+    <script>
+      // Sprawdzanie autoryzacji przy wejściu na stronę
+      window.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const userRole = localStorage.getItem("userRole");
+
+        if (isLoggedIn !== "true" || userRole !== "admin") {
+          // Użytkownik nie jest zalogowany lub nie ma uprawnień admina
+          window.location.href = "../../index.html";
+        }
+      });
+
+      // Funkcja wylogowania
+      function logout(e) {
+        e.preventDefault();
+        // Wyczyść wszystkie dane z localStorage
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userRole");
+        localStorage.clear();
+        // Przekieruj do strony logowania
+        window.location.href = "../../index.html";
+      }
+    </script>
+  </head>
+  <body class="min-h-screen" style="background-color: #fafafa; color: #111827">
+    <!-- Admin Sidebar placeholder - zostanie wczytany przez JavaScript -->
+    <div id="admin-sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="ml-64">
+      <!-- Admin Top Bar placeholder - zostanie wczytany przez JavaScript -->
+      <div id="admin-topbar-placeholder"></div>
+
+      <!-- Content Area -->
+      <div class="p-8">
+        <!-- System Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <!-- Total Users -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #eff6ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #3b82f6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #dcfce7; color: #16a34a"
+              >
+                +15%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Użytkownicy platformy
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">247</p>
+            <p class="text-xs mt-2" style="color: #6b7280">
+              37 aktywnych w tym tygodniu
+            </p>
+          </div>
+
+          <!-- Total Campaigns -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #f0fdf4"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #16a34a"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #dcfce7; color: #16a34a"
+              >
+                +23%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">
+              Wszystkie kampanie
+            </p>
+            <p class="text-3xl font-bold" style="color: #111827">1,482</p>
+            <p class="text-xs mt-2" style="color: #6b7280">
+              342 aktywnych teraz
+            </p>
+          </div>
+
+          <!-- Total Revenue -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #fef3c7"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #f59e0b"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #dcfce7; color: #16a34a"
+              >
+                +31%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Przychody (mies.)</p>
+            <p class="text-3xl font-bold" style="color: #111827">2.4M zł</p>
+            <p class="text-xs mt-2" style="color: #6b7280">Target: 3.2M zł</p>
+          </div>
+
+          <!-- Active Screens -->
+          <div
+            class="p-6 rounded-lg border transition-all duration-300 ease-in-out cursor-pointer hover:shadow-lg hover:-translate-y-1"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+            onmouseover="this.style.backgroundColor='#f8fafc'; this.style.borderColor='#3b82f6'"
+            onmouseout="this.style.backgroundColor='#ffffff'; this.style.borderColor='#e5e7eb'"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-12 h-12 rounded-lg flex items-center justify-center"
+                style="background-color: #f5f3ff"
+              >
+                <svg
+                  class="w-6 h-6"
+                  style="color: #8b5cf6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <span
+                class="text-xs px-2 py-1 rounded-full"
+                style="background-color: #fee2e2; color: #dc2626"
+              >
+                -3%
+              </span>
+            </div>
+            <p class="text-sm mb-1" style="color: #6b7280">Aktywne ekrany</p>
+            <p class="text-3xl font-bold" style="color: #111827">1,847</p>
+            <p class="text-xs mt-2" style="color: #6b7280">98.4% uptime</p>
+          </div>
+        </div>
+
+        <!-- Recent Activity & Top Campaigns -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <!-- Recent Users -->
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <h2 class="text-lg font-bold" style="color: #111827">
+                Nowi użytkownicy
+              </h2>
+              <p class="text-sm mt-1" style="color: #6b7280">
+                Ostatnio zarejestrowani
+              </p>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <!-- User 1 -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full flex items-center justify-center font-medium text-white"
+                      style="
+                        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                      "
+                    >
+                      KS
+                    </div>
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Kamil Szymański
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        kamil.sz@example.com
+                      </p>
+                    </div>
+                  </div>
+                  <span class="text-xs" style="color: #6b7280"
+                    >2 godz. temu</span
+                  >
+                </div>
+
+                <!-- User 2 -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full flex items-center justify-center font-medium text-white"
+                      style="
+                        background: linear-gradient(135deg, #10b981, #3b82f6);
+                      "
+                    >
+                      AN
+                    </div>
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Anna Nowak
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        a.nowak@example.com
+                      </p>
+                    </div>
+                  </div>
+                  <span class="text-xs" style="color: #6b7280"
+                    >5 godz. temu</span
+                  >
+                </div>
+
+                <!-- User 3 -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full flex items-center justify-center font-medium text-white"
+                      style="
+                        background: linear-gradient(135deg, #f59e0b, #ef4444);
+                      "
+                    >
+                      PK
+                    </div>
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Piotr Kowalski
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        p.kowalski@example.com
+                      </p>
+                    </div>
+                  </div>
+                  <span class="text-xs" style="color: #6b7280"
+                    >1 dzień temu</span
+                  >
+                </div>
+
+                <!-- User 4 -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-full flex items-center justify-center font-medium text-white"
+                      style="
+                        background: linear-gradient(135deg, #8b5cf6, #ec4899);
+                      "
+                    >
+                      MJ
+                    </div>
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Maria Jabłońska
+                      </p>
+                      <p class="text-sm" style="color: #6b7280">
+                        m.jablonska@example.com
+                      </p>
+                    </div>
+                  </div>
+                  <span class="text-xs" style="color: #6b7280">2 dni temu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Campaigns by Revenue -->
+          <div
+            class="rounded-lg border"
+            style="background-color: #ffffff; border-color: #e5e7eb"
+          >
+            <div class="p-6 border-b" style="border-color: #e5e7eb">
+              <h2 class="text-lg font-bold" style="color: #111827">
+                Top kampanie
+              </h2>
+              <p class="text-sm mt-1" style="color: #6b7280">
+                Według przychodu w tym miesiącu
+              </p>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <!-- Campaign 1 -->
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Coca-Cola - Letnia kampania
+                      </p>
+                      <p class="text-xs" style="color: #6b7280">
+                        Coca-Cola Company
+                      </p>
+                    </div>
+                    <span class="font-bold" style="color: #111827">
+                      145k zł
+                    </span>
+                  </div>
+                  <div
+                    class="w-full h-2 rounded-full overflow-hidden"
+                    style="background-color: #e5e7eb"
+                  >
+                    <div
+                      class="h-full rounded-full"
+                      style="width: 92%; background-color: #3b82f6"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Campaign 2 -->
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Pepsi MAX - Zima 2025
+                      </p>
+                      <p class="text-xs" style="color: #6b7280">
+                        PepsiCo Poland
+                      </p>
+                    </div>
+                    <span class="font-bold" style="color: #111827">
+                      128k zł
+                    </span>
+                  </div>
+                  <div
+                    class="w-full h-2 rounded-full overflow-hidden"
+                    style="background-color: #e5e7eb"
+                  >
+                    <div
+                      class="h-full rounded-full"
+                      style="width: 85%; background-color: #10b981"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Campaign 3 -->
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Tyskie - Mistrzostwa
+                      </p>
+                      <p class="text-xs" style="color: #6b7280">Grupa Żywiec</p>
+                    </div>
+                    <span class="font-bold" style="color: #111827">
+                      98k zł
+                    </span>
+                  </div>
+                  <div
+                    class="w-full h-2 rounded-full overflow-hidden"
+                    style="background-color: #e5e7eb"
+                  >
+                    <div
+                      class="h-full rounded-full"
+                      style="width: 78%; background-color: #f59e0b"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Campaign 4 -->
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div>
+                      <p class="font-medium" style="color: #111827">
+                        Haribo - Słodki świat
+                      </p>
+                      <p class="text-xs" style="color: #6b7280">
+                        Haribo Polska
+                      </p>
+                    </div>
+                    <span class="font-bold" style="color: #111827">
+                      76k zł
+                    </span>
+                  </div>
+                  <div
+                    class="w-full h-2 rounded-full overflow-hidden"
+                    style="background-color: #e5e7eb"
+                  >
+                    <div
+                      class="h-full rounded-full"
+                      style="width: 65%; background-color: #8b5cf6"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- All Campaigns Table -->
+        <div
+          class="rounded-lg border overflow-hidden"
+          style="background-color: #ffffff; border-color: #e5e7eb"
+        >
+          <div class="p-6 border-b" style="border-color: #e5e7eb">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold" style="color: #111827">
+                  Wszystkie kampanie
+                </h2>
+                <p class="text-sm mt-1" style="color: #6b7280">
+                  Przegląd wszystkich kampanii w systemie
+                </p>
+              </div>
+              <div class="flex gap-3">
+                <input
+                  type="text"
+                  placeholder="Szukaj kampanii..."
+                  class="px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                />
+                <select
+                  class="px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-primary transition-colors"
+                  style="
+                    background-color: #f9fafb;
+                    border: 1px solid #e5e7eb;
+                    color: #111827;
+                  "
+                >
+                  <option>Wszystkie statusy</option>
+                  <option>Aktywne</option>
+                  <option>Zaplanowane</option>
+                  <option>Zakończone</option>
+                  <option>Wstrzymane</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table id="admin-campaigns-table" class="w-full" data-sortable>
+              <thead style="background-color: #f9fafb">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Kampania
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Klient
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Wyświetlenia
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Przychód
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Start - Koniec
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider"
+                    style="color: #6b7280"
+                  >
+                    Akcje
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: #e5e7eb">
+                <!-- Row 1 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded flex items-center justify-center"
+                        style="background-color: #eff6ff"
+                      >
+                        <svg
+                          class="w-5 h-5 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Coca-Cola - Letnia kampania
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          #CAM-2025-001
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Coca-Cola Company
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      jan.kowalski@coca-cola.com
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Aktywna
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">2.3M</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      +18% vs. średnia
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">145k zł</p>
+                    <p class="text-sm" style="color: #6b7280">CPM: 62 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      01.06 - 31.08.2025
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      45 dni pozostało
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Zobacz szczegóły"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Edytuj"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded flex items-center justify-center"
+                        style="background-color: #eff6ff"
+                      >
+                        <svg
+                          class="w-5 h-5 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Pepsi MAX - Zima 2025
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          #CAM-2025-002
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      PepsiCo Poland
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      anna.nowak@pepsico.com
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #dcfce7; color: #16a34a"
+                    >
+                      Aktywna
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">1.8M</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      +12% vs. średnia
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">128k zł</p>
+                    <p class="text-sm" style="color: #6b7280">CPM: 71 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      01.01 - 31.03.2025
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      23 dni pozostało
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Zobacz szczegóły"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Edytuj"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded flex items-center justify-center"
+                        style="background-color: #fef3c7"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          style="color: #f59e0b"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Tyskie - Mistrzostwa
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          #CAM-2025-003
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Grupa Żywiec
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      marketing@zywiec.com
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #fef3c7; color: #f59e0b"
+                    >
+                      Zaplanowana
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">-</p>
+                    <p class="text-sm" style="color: #6b7280">Start za 5 dni</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">98k zł</p>
+                    <p class="text-sm" style="color: #6b7280">
+                      Budżet całkowity
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      15.06 - 15.09.2025
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">92 dni trwania</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Zobacz szczegóły"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Edytuj"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Row 4 -->
+                <tr class="hover:bg-gray-50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-10 h-10 rounded flex items-center justify-center"
+                        style="background-color: #f3f4f6"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          style="color: #6b7280"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium" style="color: #111827">
+                          Haribo - Słodki świat
+                        </p>
+                        <p class="text-sm" style="color: #6b7280">
+                          #CAM-2024-189
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      Haribo Polska
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">
+                      kontakt@haribo.pl
+                    </p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      class="px-3 py-1 text-xs font-medium rounded-full"
+                      style="background-color: #f3f4f6; color: #6b7280"
+                    >
+                      Zakończona
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">1.2M</p>
+                    <p class="text-sm" style="color: #6b7280">Całkowite</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">76k zł</p>
+                    <p class="text-sm" style="color: #6b7280">CPM: 63 zł</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="font-medium" style="color: #111827">
+                      01.12 - 31.12.2024
+                    </p>
+                    <p class="text-sm" style="color: #6b7280">Zakończona</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex gap-2">
+                      <button
+                        class="p-2 rounded-lg transition-all duration-300 ease-in-out"
+                        style="color: #6b7280"
+                        onmouseover="this.style.backgroundColor='#eff6ff'; this.style.color='#3b82f6'"
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
+                        title="Zobacz raport"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
